@@ -32,6 +32,7 @@
             --shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
         }
 
+        /* ✅ เติม CSS ชุดสีโหมดพาสเทลกลับเข้ามา */
         body.theme-pastel {
             --bg-main: linear-gradient(135deg, #f3e8ff 0%, #e9d5ff 100%);
             --sidebar-bg: rgba(255, 255, 255, 0.7);
@@ -83,17 +84,10 @@
         body.theme-pastel .btn-theme-super:hover { background: #1e293b; box-shadow: 0 6px 20px rgba(0,0,0,0.3); }
 
         .holo-display-wrapper { position: sticky; top: 15px; display: flex; justify-content: center; align-items: flex-start; height: calc(100vh - 40px); perspective: 1000px; padding-top: 10px;}
-        .holo-card { width: 100%; max-width: 480px; background: rgba(255, 255, 255, 0.02); border-radius: 20px; padding: 12px; box-shadow: 0 25px 50px rgba(0,0,0,0.5), inset 0 0 0 1px rgba(255,255,255,0.1); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); position: relative; }
+        .holo-card { width: 100%; max-width: 550px; background: rgba(255, 255, 255, 0.02); border-radius: 20px; padding: 12px; box-shadow: 0 25px 50px rgba(0,0,0,0.5), inset 0 0 0 1px rgba(255,255,255,0.1); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); position: relative; }
         .holo-screen { width: 100%; border-radius: 8px; overflow: hidden; display: flex; justify-content: center; align-items: center; }
         
         #canvas { width: 100%; height: auto; max-height: 85vh; object-fit: contain; display: block; margin: 0 auto; }
-
-        input[type=range] { appearance: none; -webkit-appearance: none; width: 100%; background: transparent; height: 28px; margin: 0; padding: 0;}
-        input[type=range]::-webkit-slider-thumb { appearance: none; -webkit-appearance: none; height: 14px; width: 14px; border-radius: 50%; background: var(--ktb-secondary); cursor: pointer; margin-top: -5px; box-shadow: 0 0 10px rgba(0,0,0,0.5); }
-        input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 4px; cursor: pointer; background: var(--card-border); border-radius: 2px; }
-        
-        .btn-outline-warning { border-color: #f59e0b; color: #f59e0b; background: transparent; height: 28px; line-height: 1; padding: 0 10px; font-size: 0.75rem;}
-        .btn-warning { background-color: #f59e0b; color: #000; border-color: #f59e0b; height: 28px; line-height: 1; padding: 0 10px; font-size: 0.75rem;}
     </style>
 </head>
 
@@ -184,7 +178,7 @@
       <div class="row g-2">
         
         <div class="col-lg-5">
-
+            
             <div class="d-flex justify-content-between align-items-center mb-2 px-1">
                 <div class="text-warning fw-medium" style="font-size: 0.85rem;"><i class="bi bi-lightning-charge-fill"></i> เมนูด่วน</div>
                 <div class="d-flex gap-2">
@@ -199,74 +193,100 @@
                     </button>
                 </div>
             </div>
-            
+
             <div class="form-section-card">
-                <div class="form-section-title"><i class="bi bi-clock"></i> ตั้งค่าเวลาแจ้งเตือน</div>
-                <div class="row g-2 mb-2">
-                    <div class="col-12">
-                        <label for="datetime_plus_one" class="form-label">เวลาแจ้งเตือนหน้าจอ</label>
+                <div class="form-section-title"><i class="bi bi-phone"></i> ตั้งค่าโทรศัพท์ & เวลา</div>
+                <div class="row g-2 align-items-end">
+                    <div class="col-6">
+                        <label for="datetime_plus_one" class="form-label">เวลามือถือหน้าจอ</label>
                         <input type="time" class="form-control" id="datetime_plus_one" required oninput="if(window.updateDisplay) window.updateDisplay();">
                     </div>
-                </div>
-            </div>
-
-            <div class="form-section-card">
-                <div class="form-section-title"><i class="bi bi-wallet2"></i> ข้อมูลการโอน</div>
-                <div class="row g-2 mb-2">
                     <div class="col-6">
-                        <label for="money01" class="form-label text-success">เงินเข้าจำนวนเงิน</label>
-                        <input type="text" class="form-control text-success fw-bold" id="money01" name="money01" value="+1,924.00" oninput="if(window.updateDisplay) window.updateDisplay();">
+                        <label for="battery" class="form-label">แบตเตอรี่: <span id="battery-level" class="text-success">100</span>%</label>
+                        <input type="range" class="form-range" id="battery" name="battery" min="0" max="100" value="100" oninput="updateBatteryUI(); if(window.updateDisplay) window.updateDisplay();">
                     </div>
-                    <div class="col-6">
-                        <label for="money02" class="form-label">ยอดที่ใช้ได้</label>
-                        <input type="text" class="form-control fw-bold" id="money02" name="money02" value="30,924.00" oninput="if(window.updateDisplay) window.updateDisplay();">
-                    </div>
-                    <div class="col-12">
-                        <label for="datetime" class="form-label">เวลาเงินเข้า</label>
-                        <input type="datetime-local" class="form-control" id="datetime" required oninput="if(window.updateDisplay) window.updateDisplay();">
+                    <div class="col-12 mt-2">
+                        <button type="button" id="powerSavingMode" class="btn btn-outline-warning w-100 rounded-pill" onclick="togglePowerSavingMode()">โหมดประหยัดแบตเตอรี่</button>
                     </div>
                 </div>
             </div>
 
             <div class="form-section-card">
-                <div class="form-section-title"><i class="bi bi-person-vcard"></i> ข้อมูลบัญชี</div>
+                <div class="form-section-title"><i class="bi bi-person-vcard"></i> ข้อมูลบัญชีหลัก</div>
                 <div class="row g-2 mb-2">
                     <div class="col-12">
-                        <label for="senderaccount" class="form-label">เข้าบัญชี (บัญชีของเรา)</label>
-                        <input type="text" class="form-control" id="senderaccount" name="senderaccount" value="XX8753" oninput="if(window.updateDisplay) window.updateDisplay();">
+                        <label for="sendername" class="form-label">ชื่อบัญชี</label>
+                        <input type="text" class="form-control" id="sendername" name="sendername" value="ออมทรัพย์" oninput="if(window.updateDisplay) window.updateDisplay();">
                     </div>
                     <div class="col-12">
-                        <label for="bank1" class="form-label">จากบัญชี (ธนาคารต้นทาง)</label>
-                        <select class="form-select" id="bank1" name="bank1" onchange="if(window.updateDisplay) window.updateDisplay();">
-                            <option value="KTB">กรุงไทย</option>
-                            <option value="BAY">กรุงศรี</option>
-                            <option value="KBANK">กสิกรไทย</option>
-                            <option value="BBL">กรุงเทพ</option>
-                            <option value="SCB">ไทยพาณิชย์</option>
-                            <option value="TTB">ทหารไทยธนชาต</option>
-                            <option value="GSB">ออมสิน</option>
-                            <option value="BAAC">ธ.ก.ส.</option>
-                            <option value="GHB">อาคารสงเคราะห์</option>
-                            <option value="KKP">เกียรตินาคินภัทร</option>
-                            <option value="CIMB">ซีไอเอ็มบี</option>
-                            <option value="UOB">ยูโอบี</option>
-                            <option value="LH BANK">แลนด์ แอนด์ เฮาส์</option>
-                            <option value="ICBC">ไอซีบีซี</option>
+                        <label for="senderaccount" class="form-label">เลขที่บัญชี</label>
+                        <input type="text" class="form-control" id="senderaccount" name="senderaccount" value="xxx-xxx563-2" oninput="if(window.updateDisplay) window.updateDisplay();">
+                    </div>
+                    <div class="col-6">
+                        <label for="money01" class="form-label text-success">ยอดเงินรวมทั้งหมด</label>
+                        <input type="text" class="form-control text-success fw-bold" id="money01" name="money01" value="30,858.86" oninput="if(window.updateDisplay) window.updateDisplay();">
+                    </div>
+                    <div class="col-6">
+                        <label for="datetime" class="form-label">วันที่ทำรายการ</label>
+                        <input type="date" class="form-control" id="datetime" required oninput="if(window.updateDisplay) window.updateDisplay();">
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-section-card">
+                <div class="form-section-title"><i class="bi bi-list-check"></i> ประวัติรายการย่อย</div>
+                
+                <p class="mb-1 fw-bold" style="font-size: 0.75rem; color: var(--ktb-secondary);">รายการที่ 1</p>
+                <div class="row g-2 mb-2">
+                    <div class="col-4">
+                        <select id="choose1" class="form-select" onchange="if(window.updateDisplay) window.updateDisplay();">
+                            <option value="ฝากเงิน - EASY">ฝากเงิน - EASY</option>
+                            <option value="ถอนเงิน - EASY">ถอนเงิน - EASY</option>
                         </select>
                     </div>
-                    <div class="col-6">
-                        <label for="receiveraccount" class="form-label">เลขบัญชีต้นทาง</label>
-                        <input type="text" class="form-control" id="receiveraccount" name="receiveraccount" value="XX8881" oninput="if(window.updateDisplay) window.updateDisplay();">
+                    <div class="col-4">
+                        <input type="text" class="form-control text-success fw-bold" id="money1" value="30,326.00" placeholder="จำนวนเงิน" oninput="if(window.updateDisplay) window.updateDisplay();">
                     </div>
-                    <div class="col-6">
-                        <label for="receivername" class="form-label">ชื่อต้นทาง</label>
-                        <input type="text" class="form-control" id="receivername" name="receivername" value="-----------" oninput="if(window.updateDisplay) window.updateDisplay();">
+                    <div class="col-4">
+                        <input type="time" class="form-control" id="time1" value="20:00" oninput="if(window.updateDisplay) window.updateDisplay();">
+                    </div>
+                </div>
+
+                <p class="mb-1 fw-bold" style="font-size: 0.75rem; color: var(--ktb-secondary);">รายการที่ 2</p>
+                <div class="row g-2 mb-2">
+                    <div class="col-4">
+                        <select id="choose2" class="form-select" onchange="if(window.updateDisplay) window.updateDisplay();">
+                            <option value="ถอนเงิน - EASY">ถอนเงิน - EASY</option>
+                            <option value="ฝากเงิน - EASY">ฝากเงิน - EASY</option>
+                        </select>
+                    </div>
+                    <div class="col-4">
+                        <input type="text" class="form-control text-success fw-bold" id="money2" value="16,000.00" placeholder="จำนวนเงิน" oninput="if(window.updateDisplay) window.updateDisplay();">
+                    </div>
+                    <div class="col-4">
+                        <input type="time" class="form-control" id="time2" value="18:00" oninput="if(window.updateDisplay) window.updateDisplay();">
+                    </div>
+                </div>
+
+                <p class="mb-1 fw-bold" style="font-size: 0.75rem; color: var(--ktb-secondary);">รายการที่ 3</p>
+                <div class="row g-2 mb-2">
+                    <div class="col-4">
+                        <select id="choose3" class="form-select" onchange="if(window.updateDisplay) window.updateDisplay();">
+                            <option value="ฝากเงิน - EASY">ฝากเงิน - EASY</option>
+                            <option value="ถอนเงิน - EASY">ถอนเงิน - EASY</option>
+                        </select>
+                    </div>
+                    <div class="col-4">
+                        <input type="text" class="form-control text-success fw-bold" id="money3" value="15,000.00" placeholder="จำนวนเงิน" oninput="if(window.updateDisplay) window.updateDisplay();">
+                    </div>
+                    <div class="col-4">
+                        <input type="time" class="form-control" id="time3" value="16:00" oninput="if(window.updateDisplay) window.updateDisplay();">
                     </div>
                 </div>
             </div>
 
             <button type="button" class="btn-bank-main mt-1 mb-4" onclick="if(window.downloadImage) window.downloadImage()">
-                <i class="bi bi-download me-2"></i> DOWNLOAD สลิปเงินเข้า
+                <i class="bi bi-download me-2"></i> DOWNLOAD สลิปแจ้งเตือน SCB
             </button>
 
         </div>
@@ -275,7 +295,7 @@
             <div class="holo-display-wrapper">
                 <div class="holo-card">
                     <div class="holo-screen" id="display">
-                        <canvas id="canvas" width="811" height="700"></canvas>
+                        <canvas id="canvas" width="714" height="1280"></canvas>
                     </div>
                 </div>
             </div>
@@ -296,7 +316,7 @@
         if(dtPlusOne) dtPlusOne.value = timeStr;
         
         now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
-        const localISO = now.toISOString().slice(0, 16);
+        const localISO = now.toISOString().split('T')[0];
         const dt = document.getElementById('datetime');
         if(dt) dt.value = localISO;
 
@@ -304,6 +324,33 @@
             if (typeof window.updateDisplay === "function") window.updateDisplay();
         }, 500);
     });
+
+    window.updateBatteryUI = function() {
+        const val = document.getElementById('battery')?.value || 100;
+        const levelText = document.getElementById('battery-level');
+        if(levelText) {
+            levelText.innerText = val;
+            if (val < 20) levelText.className = 'text-danger fw-bold';
+            else if (val < 50) levelText.className = 'text-warning fw-bold';
+            else levelText.className = 'text-success fw-bold';
+        }
+    };
+    
+    window.togglePowerSavingMode = function() {
+        const btn = document.getElementById('powerSavingMode');
+        if(!btn) return;
+        
+        if (btn.classList.contains('btn-warning')) {
+            btn.classList.remove('btn-warning');
+            btn.classList.add('btn-outline-warning');
+        } else {
+            btn.classList.remove('btn-outline-warning');
+            btn.classList.add('btn-warning');
+        }
+        
+        if (typeof window.togglePowerSaving === 'function') window.togglePowerSaving();
+        else if (typeof window.updateDisplay === 'function') window.updateDisplay();
+    };
 
     const themeToggleBtn = document.getElementById('themeToggleBtn');
     const themeIcon = document.getElementById('themeIcon');
@@ -333,30 +380,55 @@
         const timeStr = now.toTimeString().slice(0,5);
         if(document.getElementById('datetime_plus_one')) document.getElementById('datetime_plus_one').value = timeStr;
         
-        if(document.getElementById('money01')) document.getElementById('money01').value = '+1,924.00';
-        if(document.getElementById('money02')) document.getElementById('money02').value = '30,924.00';
+        if(document.getElementById('battery')) {
+            document.getElementById('battery').value = 100;
+            updateBatteryUI();
+        }
+        const btnPower = document.getElementById('powerSavingMode');
+        if(btnPower && btnPower.classList.contains('btn-warning')) {
+            togglePowerSavingMode();
+        }
+
+        if(document.getElementById('sendername')) document.getElementById('sendername').value = 'ออมทรัพย์';
+        if(document.getElementById('senderaccount')) document.getElementById('senderaccount').value = 'xxx-xxx563-2';
+        if(document.getElementById('money01')) document.getElementById('money01').value = '30,858.86';
         
         now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
-        const localISO = now.toISOString().slice(0, 16);
+        const localISO = now.toISOString().split('T')[0];
         if(document.getElementById('datetime')) document.getElementById('datetime').value = localISO;
         
-        if(document.getElementById('senderaccount')) document.getElementById('senderaccount').value = 'XX8753';
-        if(document.getElementById('bank1')) document.getElementById('bank1').selectedIndex = 0; // KTB
-        if(document.getElementById('receiveraccount')) document.getElementById('receiveraccount').value = 'XX8881';
-        if(document.getElementById('receivername')) document.getElementById('receivername').value = '-----------';
+        if(document.getElementById('choose1')) document.getElementById('choose1').selectedIndex = 0;
+        if(document.getElementById('money1')) document.getElementById('money1').value = '30,326.00';
+        if(document.getElementById('time1')) document.getElementById('time1').value = '20:00';
+        
+        if(document.getElementById('choose2')) document.getElementById('choose2').selectedIndex = 0;
+        if(document.getElementById('money2')) document.getElementById('money2').value = '16,000.00';
+        if(document.getElementById('time2')) document.getElementById('time2').value = '18:00';
+        
+        if(document.getElementById('choose3')) document.getElementById('choose3').selectedIndex = 0;
+        if(document.getElementById('money3')) document.getElementById('money3').value = '15,000.00';
+        if(document.getElementById('time3')) document.getElementById('time3').value = '16:00';
         
         if(window.updateDisplay) window.updateDisplay();
     };
 
     window.saveFavorite = function() {
         const favData = {
-            money01: document.getElementById('money01') ? document.getElementById('money01').value : '',
-            money02: document.getElementById('money02') ? document.getElementById('money02').value : '',
-            
+            sName: document.getElementById('sendername') ? document.getElementById('sendername').value : '',
             sAcc: document.getElementById('senderaccount') ? document.getElementById('senderaccount').value : '',
-            bank1: document.getElementById('bank1') ? document.getElementById('bank1').value : '',
-            rAcc: document.getElementById('receiveraccount') ? document.getElementById('receiveraccount').value : '',
-            rName: document.getElementById('receivername') ? document.getElementById('receivername').value : ''
+            money01: document.getElementById('money01') ? document.getElementById('money01').value : '',
+            
+            c1: document.getElementById('choose1') ? document.getElementById('choose1').value : '',
+            m1: document.getElementById('money1') ? document.getElementById('money1').value : '',
+            t1: document.getElementById('time1') ? document.getElementById('time1').value : '',
+            
+            c2: document.getElementById('choose2') ? document.getElementById('choose2').value : '',
+            m2: document.getElementById('money2') ? document.getElementById('money2').value : '',
+            t2: document.getElementById('time2') ? document.getElementById('time2').value : '',
+            
+            c3: document.getElementById('choose3') ? document.getElementById('choose3').value : '',
+            m3: document.getElementById('money3') ? document.getElementById('money3').value : '',
+            t3: document.getElementById('time3') ? document.getElementById('time3').value : ''
         };
         localStorage.setItem(STORAGE_KEY, JSON.stringify(favData));
         alert('⭐ บันทึกรายการนี้เป็น "รายการโปรด" เรียบร้อยแล้ว!');
@@ -367,13 +439,21 @@
         if (savedStr) {
             const favData = JSON.parse(savedStr);
             
-            if(favData.money01 !== undefined && document.getElementById('money01')) document.getElementById('money01').value = favData.money01;
-            if(favData.money02 !== undefined && document.getElementById('money02')) document.getElementById('money02').value = favData.money02;
-            
+            if(favData.sName !== undefined && document.getElementById('sendername')) document.getElementById('sendername').value = favData.sName;
             if(favData.sAcc !== undefined && document.getElementById('senderaccount')) document.getElementById('senderaccount').value = favData.sAcc;
-            if(favData.bank1 !== undefined && document.getElementById('bank1')) document.getElementById('bank1').value = favData.bank1;
-            if(favData.rAcc !== undefined && document.getElementById('receiveraccount')) document.getElementById('receiveraccount').value = favData.rAcc;
-            if(favData.rName !== undefined && document.getElementById('receivername')) document.getElementById('receivername').value = favData.rName;
+            if(favData.money01 !== undefined && document.getElementById('money01')) document.getElementById('money01').value = favData.money01;
+            
+            if(favData.c1 !== undefined && document.getElementById('choose1')) document.getElementById('choose1').value = favData.c1;
+            if(favData.m1 !== undefined && document.getElementById('money1')) document.getElementById('money1').value = favData.m1;
+            if(favData.t1 !== undefined && document.getElementById('time1')) document.getElementById('time1').value = favData.t1;
+            
+            if(favData.c2 !== undefined && document.getElementById('choose2')) document.getElementById('choose2').value = favData.c2;
+            if(favData.m2 !== undefined && document.getElementById('money2')) document.getElementById('money2').value = favData.m2;
+            if(favData.t2 !== undefined && document.getElementById('time2')) document.getElementById('time2').value = favData.t2;
+            
+            if(favData.c3 !== undefined && document.getElementById('choose3')) document.getElementById('choose3').value = favData.c3;
+            if(favData.m3 !== undefined && document.getElementById('money3')) document.getElementById('money3').value = favData.m3;
+            if(favData.t3 !== undefined && document.getElementById('time3')) document.getElementById('time3').value = favData.t3;
             
             if(window.updateDisplay) window.updateDisplay();
         } else {
@@ -382,7 +462,7 @@
     };
 </script>
 
-<script src="js/slipscb1.js?v=1"></script> 
+<script src="js/slipscb1.js"></script> 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
@@ -405,6 +485,7 @@
         if (!user) {
             window.location.replace('https://hy-c9.github.io/Slip-H2o-login.net/');
         } else {
+
             const emailElem = document.getElementById('userEmailDisplay');
             if (emailElem) emailElem.innerText = user.email;
 
